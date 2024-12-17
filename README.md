@@ -1,0 +1,1 @@
+請打開app.py，將HUGGINGFACE_TOKEN換成你自己的access token，你就可以使用了dOuOb!
