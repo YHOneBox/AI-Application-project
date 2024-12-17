@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>AI生圖工具</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Arial", sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        header {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            width: 50%;
+            margin: 50px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        input[type=file], input[type=text] {
+            margin: 20px 0;
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background: #3498db;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        footer {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 10px 0;
+            text-align: center;
+            font-size: 0.9em;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            left: 0;
+        }
+
+        /* 調整表單排版 */
+        .mode-selection {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .mode-selection label {
+            margin: 0 10px;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        h2, h3 {
+            margin-top: 30px;
+        }
+    </style>
+    <script>
+        function toggleFields() {
+            const mode = document.querySelector('input[name="mode"]:checked').value;
+            const imageField = document.getElementById('image-field');
+            if (mode === 'img2img') {
+                imageField.style.display = 'block';
+            } else {
+                imageField.style.display = 'none';
+            }
+        }
+    </script>
+</head>
+<body>
+    <header>AI生圖工具</header>
+    <div class="container">
+        <form method="POST" enctype="multipart/form-data" action="/">
+            <div class="mode-selection">
+                <p>選擇模式：</p>
+                <label><input type="radio" name="mode" value="txt2img" checked onclick="toggleFields()"> 文本生圖</label>
+                <label><input type="radio" name="mode" value="img2img" onclick="toggleFields()"> 圖像轉圖像</label>
+            </div>
+            <div>
+                <label>提示詞 (Prompt):</label><br>
+                <input type="text" name="prompt" required>
+            </div>
+            <div id="image-field" style="display:none;">
+                <label>上傳初始圖片 (Image-to-Image 模式需要):</label><br>
+                <input type="file" name="init_image" accept="image/*">
+            </div>
+            <br>
+            <button type="submit">生成圖像</button>
+        </form>
+
+        {% if generated_image_url %}
+            <h2>生成的圖像：</h2>
+            <img src="{{ generated_image_url }}" alt="Generated Image">
+            <hr>
+            <h3>對生成的圖像進行風格轉換或再修改：</h3>
+            <form method="POST" action="/modify">
+                <input type="hidden" name="image_path" value="{{ generated_image_path }}">
+                <label>輸入新的提示詞來修改風格或內容：</label><br>
+                <input type="text" name="new_prompt" required>
+                <br><br>
+                <button type="submit">修改圖像</button>
+            </form>
+        {% endif %}
+    </div>
+    <footer>人工智慧應用期末專題 <br> ADT110117 張翊禾、ADT110125 白杰城</footer>
+</body>
+</html>
